@@ -27,6 +27,7 @@
     "extension"
   ],
   "author": "Romik Makavana",
+  "contributors": ["ski.com"],
   "license": "MIT",
   "devDependencies": {
     "@tiptap/core": "^3.22.2",
