@@ -14,8 +14,8 @@ export interface PaginationPlusConfig {
   pageWidth: number;
   marginTop: number;
   marginBottom: number;
-  marginLeft: number;
-  marginRight: number;
+  marginInner: number;
+  marginOuter: number;
   pageGap: number;
   contentMarginTop: number;
   contentMarginBottom: number;
@@ -92,8 +92,8 @@ const defaultPageConfig: PaginationPlusConfig = {
   pageWidth: 789,
   marginTop: 20,
   marginBottom: 20,
-  marginLeft: 50,
-  marginRight: 50,
+  marginInner: 50,
+  marginOuter: 50,
   pageGap: 50,
   contentMarginTop: 10,
   contentMarginBottom: 10,
@@ -143,8 +143,8 @@ const getPageConfig = (_storage: PaginationPlusStorage, _currentOptions: Paginat
     pageWidth: _storage.pageWidth ?? defaultPageConfig.pageWidth,
     marginTop: _storage.marginTop ?? defaultPageConfig.marginTop,
     marginBottom: _storage.marginBottom ?? defaultPageConfig.marginBottom,
-    marginLeft: _storage.marginLeft ?? defaultPageConfig.marginLeft,
-    marginRight: _storage.marginRight ?? defaultPageConfig.marginRight,
+    marginInner: _storage.marginInner ?? defaultPageConfig.marginInner,
+    marginOuter: _storage.marginOuter ?? defaultPageConfig.marginOuter,
     pageGap: _storage.pageGap ?? defaultPageConfig.pageGap,
     contentMarginTop: _storage.contentMarginTop ?? defaultPageConfig.contentMarginTop,
     contentMarginBottom: _storage.contentMarginBottom ?? defaultPageConfig.contentMarginBottom,
@@ -171,8 +171,8 @@ const getPageConfigFromOptions = (_currentOptions: PaginationPlusOptions): Pagin
     pageWidth: _currentOptions.pageWidth ?? defaultPageConfig.pageWidth,
     marginTop: _currentOptions.marginTop ?? defaultPageConfig.marginTop,
     marginBottom: _currentOptions.marginBottom ?? defaultPageConfig.marginBottom,
-    marginLeft: _currentOptions.marginLeft ?? defaultPageConfig.marginLeft,
-    marginRight: _currentOptions.marginRight ?? defaultPageConfig.marginRight,
+    marginInner: _currentOptions.marginInner ?? defaultPageConfig.marginInner,
+    marginOuter: _currentOptions.marginOuter ?? defaultPageConfig.marginOuter,
     pageGap: _currentOptions.pageGap ?? defaultPageConfig.pageGap,
     contentMarginTop: _currentOptions.contentMarginTop ?? defaultPageConfig.contentMarginTop,
     contentMarginBottom: _currentOptions.contentMarginBottom ?? defaultPageConfig.contentMarginBottom,
@@ -357,8 +357,8 @@ export const PaginationPlus = Extension.create<PaginationPlusOptions, Pagination
             storage.pageWidth = _currentOptions.pageWidth;
             storage.marginTop = _currentOptions.marginTop;
             storage.marginBottom = _currentOptions.marginBottom;
-            storage.marginLeft = _currentOptions.marginLeft;
-            storage.marginRight = _currentOptions.marginRight;
+            storage.marginInner = _currentOptions.marginInner;
+            storage.marginOuter = _currentOptions.marginOuter;
             storage.pageGap = _currentOptions.pageGap;
             storage.contentMarginTop = _currentOptions.contentMarginTop;
             storage.contentMarginBottom = _currentOptions.contentMarginBottom;
@@ -415,8 +415,8 @@ export const PaginationPlus = Extension.create<PaginationPlusOptions, Pagination
                 storage.pageWidth !== storage.appliedConfig.pageWidth ||
                 storage.marginTop !== storage.appliedConfig.marginTop ||
                 storage.marginBottom !== storage.appliedConfig.marginBottom ||
-                storage.marginLeft !== storage.appliedConfig.marginLeft ||
-                storage.marginRight !== storage.appliedConfig.marginRight ||
+                storage.marginInner !== storage.appliedConfig.marginInner ||
+                storage.marginOuter !== storage.appliedConfig.marginOuter ||
                 storage.pageGap !== storage.appliedConfig.pageGap ||
                 storage.contentMarginTop !== storage.appliedConfig.contentMarginTop ||
                 storage.contentMarginBottom !== storage.appliedConfig.contentMarginBottom ||
@@ -582,8 +582,8 @@ export const PaginationPlus = Extension.create<PaginationPlusOptions, Pagination
         this.storage.pageWidth = size.pageWidth;
         this.storage.marginTop = size.marginTop;
         this.storage.marginBottom = size.marginBottom;
-        this.storage.marginLeft = size.marginLeft;
-        this.storage.marginRight = size.marginRight;
+        this.storage.marginInner = size.marginLeft;
+        this.storage.marginOuter = size.marginRight;
         return true;
       },
       updatePageWidth: (width: number) => () => {
@@ -601,8 +601,8 @@ export const PaginationPlus = Extension.create<PaginationPlusOptions, Pagination
       updateMargins: (margins: { top: number, bottom: number, left: number, right: number }) => () => {
         this.storage.marginTop = margins.top;
         this.storage.marginBottom = margins.bottom;
-        this.storage.marginLeft = margins.left;
-        this.storage.marginRight = margins.right;
+        this.storage.marginInner = margins.left;
+        this.storage.marginOuter = margins.right;
         return true;
       },
       updateContentMargins: (margins: { top: number, bottom: number }) => () => {
