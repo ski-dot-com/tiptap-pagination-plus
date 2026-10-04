@@ -7,34 +7,24 @@ import { PageSize } from "./constants";
 import { HeaderOptions, FooterOptions, PageNumber, HeaderHeightMap, FooterHeightMap, HeaderClickEvent, FooterClickEvent } from "./types";
 import type { Node as PMNode } from 'prosemirror-model';
 
-export interface EachConfig {
+export interface PaginationPlusConfig {
+  enabled: boolean;
+  pageBreakBackground: string;
+  pageHeight: number;
+  pageWidth: number;
   marginTop: number;
   marginBottom: number;
   marginLeft: number;
   marginRight: number;
+  pageGap: number;
   contentMarginTop: number;
   contentMarginBottom: number;
   footerRight: string;
   footerLeft: string;
   headerRight: string;
   headerLeft: string;
-}
-
-export interface PaginationPlusConfig {
-  enabled: boolean;
-  pageBreakBackground: string;
-  pageHeight: number;
-  pageWidth: number;
-  pageGap: number;
-  customPage: Record<PageNumber, EachConfig>;
-  normalPage: {
-    type: "normal";
-    config: EachConfig;
-  } | {
-    type: "even-odd";
-    even: EachConfig;
-    odd: EachConfig;
-  }
+  customHeader: Record<PageNumber, HeaderOptions>;
+  customFooter: Record<PageNumber, FooterOptions>;
 }
 
 export interface PaginationPlusOptions extends PaginationPlusConfig {
@@ -100,23 +90,19 @@ const defaultPageConfig: PaginationPlusConfig = {
   pageBreakBackground: "#ffffff",
   pageHeight: 800,
   pageWidth: 789,
+  marginTop: 20,
+  marginBottom: 20,
+  marginLeft: 50,
+  marginRight: 50,
   pageGap: 50,
-  customPage: {},
-  normalPage: {
-    type: "normal",
-    config: {
-      marginTop: 20,
-      marginBottom: 20,
-      marginLeft: 50,
-      marginRight: 50,
-      contentMarginTop: 10,
-      contentMarginBottom: 10,
-      footerRight: "{page}",
-      footerLeft: "",
-      headerRight: "",
-      headerLeft: "",
-    }
-  }
+  contentMarginTop: 10,
+  contentMarginBottom: 10,
+  footerRight: "{page}",
+  footerLeft: "",
+  headerRight: "",
+  headerLeft: "",
+  customHeader: {},
+  customFooter: {},
 }
 
 const defaultOptions: PaginationPlusOptions = {
@@ -149,15 +135,25 @@ const refreshPage = (targetNode: HTMLElement, paginationEnabled: boolean = true)
   }
 };
 
-const getPageConfig = (_storage: Partial<PaginationPlusStorage>, _currentOptions: PaginationPlusOptions): { config: PaginationPlusConfig, options: PaginationPlusOptions } => {
+const getPageConfig = (_storage: PaginationPlusStorage, _currentOptions: PaginationPlusOptions): { config: PaginationPlusConfig, options: PaginationPlusOptions } => {
   const pageConfig: PaginationPlusConfig = {
     enabled: _storage.enabled ?? defaultOptions.enabled,
     pageBreakBackground: _storage.pageBreakBackground ?? defaultOptions.pageBreakBackground,
     pageHeight: _storage.pageHeight ?? defaultOptions.pageHeight,
     pageWidth: _storage.pageWidth ?? defaultPageConfig.pageWidth,
+    marginTop: _storage.marginTop ?? defaultPageConfig.marginTop,
+    marginBottom: _storage.marginBottom ?? defaultPageConfig.marginBottom,
+    marginLeft: _storage.marginLeft ?? defaultPageConfig.marginLeft,
+    marginRight: _storage.marginRight ?? defaultPageConfig.marginRight,
     pageGap: _storage.pageGap ?? defaultPageConfig.pageGap,
-    normalPage: _storage.normalPage ?? defaultPageConfig.normalPage,
-    customPage: _storage.customPage ?? defaultPageConfig.customPage,
+    contentMarginTop: _storage.contentMarginTop ?? defaultPageConfig.contentMarginTop,
+    contentMarginBottom: _storage.contentMarginBottom ?? defaultPageConfig.contentMarginBottom,
+    footerRight: _storage.footerRight ?? defaultPageConfig.footerRight,
+    footerLeft: _storage.footerLeft ?? defaultPageConfig.footerLeft,
+    headerRight: _storage.headerRight ?? defaultPageConfig.headerRight,
+    headerLeft: _storage.headerLeft ?? defaultPageConfig.headerLeft,
+    customHeader: _storage.customHeader ?? defaultPageConfig.customHeader,
+    customFooter: _storage.customFooter ?? defaultPageConfig.customFooter,
   };
   return {
     config: pageConfig,
@@ -167,15 +163,25 @@ const getPageConfig = (_storage: Partial<PaginationPlusStorage>, _currentOptions
   };
 }
 
-const getPageConfigFromOptions = (_currentOptions: Partial<PaginationPlusOptions>): PaginationPlusConfig => {
+const getPageConfigFromOptions = (_currentOptions: PaginationPlusOptions): PaginationPlusConfig => {
   return {
     enabled: _currentOptions.enabled ?? defaultOptions.enabled,
     pageBreakBackground: _currentOptions.pageBreakBackground ?? defaultOptions.pageBreakBackground,
     pageHeight: _currentOptions.pageHeight ?? defaultOptions.pageHeight,
     pageWidth: _currentOptions.pageWidth ?? defaultPageConfig.pageWidth,
+    marginTop: _currentOptions.marginTop ?? defaultPageConfig.marginTop,
+    marginBottom: _currentOptions.marginBottom ?? defaultPageConfig.marginBottom,
+    marginLeft: _currentOptions.marginLeft ?? defaultPageConfig.marginLeft,
+    marginRight: _currentOptions.marginRight ?? defaultPageConfig.marginRight,
     pageGap: _currentOptions.pageGap ?? defaultPageConfig.pageGap,
-    normalPage: _currentOptions.normalPage ?? defaultPageConfig.normalPage,
-    customPage: _currentOptions.customPage ?? defaultPageConfig.customPage,
+    contentMarginTop: _currentOptions.contentMarginTop ?? defaultPageConfig.contentMarginTop,
+    contentMarginBottom: _currentOptions.contentMarginBottom ?? defaultPageConfig.contentMarginBottom,
+    footerRight: _currentOptions.footerRight ?? defaultPageConfig.footerRight,
+    footerLeft: _currentOptions.footerLeft ?? defaultPageConfig.footerLeft,
+    headerRight: _currentOptions.headerRight ?? defaultPageConfig.headerRight,
+    headerLeft: _currentOptions.headerLeft ?? defaultPageConfig.headerLeft,
+    customHeader: _currentOptions.customHeader ?? defaultPageConfig.customHeader,
+    customFooter: _currentOptions.customFooter ?? defaultPageConfig.customFooter,
   };
 }
 
@@ -349,9 +355,19 @@ export const PaginationPlus = Extension.create<PaginationPlusOptions, Pagination
             storage.pageBreakBackground = _currentOptions.pageBreakBackground;
             storage.pageHeight = _currentOptions.pageHeight;
             storage.pageWidth = _currentOptions.pageWidth;
+            storage.marginTop = _currentOptions.marginTop;
+            storage.marginBottom = _currentOptions.marginBottom;
+            storage.marginLeft = _currentOptions.marginLeft;
+            storage.marginRight = _currentOptions.marginRight;
             storage.pageGap = _currentOptions.pageGap;
-            storage.normalPage = _currentOptions.normalPage;
-            storage.customPage = _currentOptions.customPage;
+            storage.contentMarginTop = _currentOptions.contentMarginTop;
+            storage.contentMarginBottom = _currentOptions.contentMarginBottom;
+            storage.footerRight = _currentOptions.footerRight;
+            storage.footerLeft = _currentOptions.footerLeft;
+            storage.headerRight = _currentOptions.headerRight;
+            storage.headerLeft = _currentOptions.headerLeft;
+            storage.customHeader = _currentOptions.customHeader;
+            storage.customFooter = _currentOptions.customFooter;
             storage.headerHeight = new Map();
             storage.footerHeight = new Map();
             storage.appliedConfig = pageConfig;
@@ -397,11 +413,19 @@ export const PaginationPlus = Extension.create<PaginationPlusOptions, Pagination
                 storage.pageBreakBackground !== storage.appliedConfig.pageBreakBackground ||
                 storage.pageHeight !== storage.appliedConfig.pageHeight ||
                 storage.pageWidth !== storage.appliedConfig.pageWidth ||
-                storage.normalPage !== storage.appliedConfig.normalPage ||
-                storage.customPage !== storage.appliedConfig.customPage ||
+                storage.marginTop !== storage.appliedConfig.marginTop ||
+                storage.marginBottom !== storage.appliedConfig.marginBottom ||
+                storage.marginLeft !== storage.appliedConfig.marginLeft ||
+                storage.marginRight !== storage.appliedConfig.marginRight ||
                 storage.pageGap !== storage.appliedConfig.pageGap ||
-                !deepEqualIterative(storage.appliedConfig.normalPage, storage.normalPage) ||
-                !deepEqualIterative(storage.appliedConfig.customPage, storage.customPage)
+                storage.contentMarginTop !== storage.appliedConfig.contentMarginTop ||
+                storage.contentMarginBottom !== storage.appliedConfig.contentMarginBottom ||
+                storage.headerLeft !== storage.appliedConfig.headerLeft ||
+                storage.headerRight !== storage.appliedConfig.headerRight ||
+                storage.footerLeft !== storage.appliedConfig.footerLeft ||
+                storage.footerRight !== storage.appliedConfig.footerRight ||
+                !deepEqualIterative(storage.appliedConfig.customHeader, storage.customHeader) ||
+                !deepEqualIterative(storage.appliedConfig.customFooter, storage.customFooter)
             ) {
               return getNewDecoration();
             }
