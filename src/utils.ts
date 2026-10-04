@@ -1,6 +1,6 @@
-import { PaginationPlusOptions } from "./PaginationPlus";
+import { EachConfig, PaginationPlusOptions } from "./PaginationPlus";
 import { PageSize } from "./constants";
-import { FooterClickEvent, FooterHeightMap, FooterOptions, HeaderClickEvent, HeaderHeightMap, HeaderOptions, PageNumber } from "./types";
+import { FooterClickEvent, FooterHeightMap, FooterOptions, HeaderClickEvent, HeaderHeightMap, HeaderOptions, PageNumber,  } from "./types";
 
 export const updateCssVariables = (targetNode: HTMLElement, config: PaginationPlusOptions) => {
 
@@ -22,14 +22,21 @@ export const updateCssVariables = (targetNode: HTMLElement, config: PaginationPl
 }
 
 
-export const getPageSize = (height: number, width: number, marginTop: number, marginBottom: number, marginLeft: number, marginRight: number): PageSize => {
+export const getPageSize = (
+    height: number, 
+    width: number, 
+    // marginTop: number, 
+    // marginBottom: number, 
+    // marginLeft: number, 
+    // marginRight: number
+  ): PageSize => {
     return {
         pageHeight: height,
         pageWidth: width,
-        marginTop,
-        marginBottom,
-        marginLeft,
-        marginRight,
+        // marginTop,
+        // marginBottom,
+        // marginLeft,
+        // marginRight,
     }
 }
 
@@ -137,8 +144,8 @@ export function mapNumberEqual(a: Map<number, number>, b: Map<number, number>) {
   return true;
 }
 
-export function getCustomPages(customHeader: Record<PageNumber, HeaderOptions>, customFooter: Record<PageNumber, FooterOptions>) {
-  return [...Object.keys(customHeader), ...Object.keys(customFooter)].map(Number);
+export function getCustomPages(customConfig: Record<PageNumber, EachConfig>): PageNumber[] {
+  return [...Object.keys(customConfig)].map(Number);
 }
 
 

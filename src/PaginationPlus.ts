@@ -442,8 +442,8 @@ export const PaginationPlus = Extension.create<PaginationPlusOptions, Pagination
                   return;
                 }
 
-                const headerHeight = getHeaderHeight(view.dom, getCustomPages(_currentOptions.customHeader, {}), "content");
-                const footerHeight = getFooterHeight(view.dom, getCustomPages({}, _currentOptions.customFooter), "content");
+                const headerHeight = getHeaderHeight(view.dom, getCustomPages(_currentOptions.customPage), "content");
+                const footerHeight = getFooterHeight(view.dom, getCustomPages(_currentOptions.customPage), "content");
 
                 const footerHeightForCurrentPages = new Map<PageNumber, number>();
                 for(let i = 0; i <= pageCount; i++) {
@@ -556,10 +556,6 @@ export const PaginationPlus = Extension.create<PaginationPlusOptions, Pagination
         
         this.storage.pageHeight = size.pageHeight;
         this.storage.pageWidth = size.pageWidth;
-        this.storage.marginTop = size.marginTop;
-        this.storage.marginBottom = size.marginBottom;
-        this.storage.marginLeft = size.marginLeft;
-        this.storage.marginRight = size.marginRight;
         return true;
       },
       updatePageWidth: (width: number) => () => {
@@ -574,7 +570,7 @@ export const PaginationPlus = Extension.create<PaginationPlusOptions, Pagination
         this.storage.pageGap = gap;
         return true;
       },
-      updateMargins: (margins: { top: number, bottom: number, left: number, right: number }) => () => {
+      updateMargins: (margins: { top: number, bottom: number, left: number, right: number }, target?: "even" | "odd" | number) => () => {
         this.storage.marginTop = margins.top;
         this.storage.marginBottom = margins.bottom;
         this.storage.marginLeft = margins.left;
